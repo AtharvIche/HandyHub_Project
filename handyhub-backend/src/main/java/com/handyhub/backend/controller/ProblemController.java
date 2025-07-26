@@ -39,20 +39,16 @@ public class ProblemController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // *** THIS IS THE METHOD YOU NEED FOR YOUR POSTMAN REQUEST ***
-    @PutMapping("/{id}") // Mapped to PUT requests at /api/problems/{id}
-    public ResponseEntity<Problem> updateProblem(
-            @PathVariable Long id,
-            @RequestBody Problem problemDetails) { // Expects the problem data in the body
+    // PUT: Update an existing problem
+    @PutMapping("/{id}")
+    public ResponseEntity<Problem> updateProblem(@PathVariable Long id, @RequestBody Problem problemDetails) {
         try {
-            // You'll need a service method that can handle this update
             Problem updatedProblem = problemService.updateFullProblem(id, problemDetails);
             return new ResponseEntity<>(updatedProblem, HttpStatus.OK);
-        } catch (RuntimeException e) { // Consider more specific exceptions
+        } catch (RuntimeException e) {
             if (e.getMessage() != null && e.getMessage().contains("Problem not found")) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            // Log the error for debugging
             System.err.println("Error updating problem: " + e.getMessage());
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -70,6 +66,7 @@ public class ProblemController {
         }
     }
 
+    // GET: Get problems for the current user
     @GetMapping("/my")
     public ResponseEntity<List<Problem>> getMyProblems() {
         List<Problem> myProblems = problemService.getAllProblems();

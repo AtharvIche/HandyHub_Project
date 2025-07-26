@@ -7,31 +7,30 @@ Thumbs.db
 *.tmp
 *.swp
 
-# Ignore node_modules and build files
-node_modules/
-dist/
-build/
-
-# Ignore environment files
-.env
-.env.local
-.env.development
-.env.test
-.env.production
+# Ignore logs and coverage reports
+logs/
+coverage/
+*.log
+*.lcov
 
 # Ignore local databases
 *.sqlite
 *.db
 
-# Ignore coverage reports
-coverage/
-*.lcov
+# Ignore environment files (including root + nested)
+.env
+.env.*
+*.env
+*.env.*
 
-# Ignore logs
-logs/
-*.log
+# ----------------------------------------
+# 📦 Package files
+# ----------------------------------------
+node_modules/
+dist/
+build/
 
-# Ignore package managers lock files (optional)
+# Optional: Lock files (comment out if needed)
 # package-lock.json
 # yarn.lock
 
@@ -41,12 +40,12 @@ logs/
 handyhub-frontend/node_modules/
 handyhub-frontend/dist/
 handyhub-frontend/.vite/
-handyhub-frontend/.DS_Store
+handyhub-frontend/.eslintcache
 
-# Editor config for frontend
+# Editor/IDE config for frontend
 handyhub-frontend/.idea/
 handyhub-frontend/.vscode/
-handyhub-frontend/.eslintcache
+handyhub-frontend/.DS_Store
 
 # ----------------------------------------
 # ☕ Backend (Spring Boot + Maven)
@@ -54,13 +53,13 @@ handyhub-frontend/.eslintcache
 handyhub-backend/target/
 handyhub-backend/.mvn/
 handyhub-backend/logs/
-handyhub-backend/.DS_Store
 
-# IDE settings for backend
+# Editor/IDE config for backend
 handyhub-backend/.idea/
 handyhub-backend/.vscode/
+handyhub-backend/.DS_Store
 
-# Spring Boot specific
+# Spring Boot config files (if not tracked)
 handyhub-backend/application.properties
 handyhub-backend/application.yml
 
@@ -68,12 +67,10 @@ handyhub-backend/application.yml
 # 💻 OS-specific
 # ----------------------------------------
 # macOS
-*.DS_Store
 .AppleDouble
 .LSOverride
 
 # Windows
-Thumbs.db
 ehthumbs.db
 Desktop.ini
 
@@ -89,22 +86,17 @@ test-results/
 # ----------------------------------------
 # 🔐 Security
 # ----------------------------------------
-# Don't upload credential files or keys
 *.pem
 *.key
 *.crt
 *.jks
 
 # ----------------------------------------
-# 🔍 JetBrains IDEs (IntelliJ, WebStorm, etc.)
+# 🧠 IDE-specific (IntelliJ, VSCode, etc.)
 # ----------------------------------------
 .idea/
 *.iml
 *.ipr
 *.iws
-
-# ----------------------------------------
-# ⚙️ VS Code
-# ----------------------------------------
 .vscode/
 .history/

@@ -1,10 +1,7 @@
-// handyhub-vite-frontend/src/services/problem.service.js
-
 import axios from 'axios';
 
-// --- CHANGE THIS LINE ---
-// Get the base URL from environment variables using Vite's import.meta.env
-const API_BASE_URL = import.meta.env.REACT_APP_API_BASE_URL || 'http://localhost:8080/api';
+// Get the base URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 const problemApi = axios.create({
     baseURL: API_BASE_URL,
