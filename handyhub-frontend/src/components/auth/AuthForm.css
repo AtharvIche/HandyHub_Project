@@ -1,50 +1,13 @@
-/* src/App.css */
+/* src/components/auth/AuthForm.css */
 
-/* These are crucial for making the page full height */
-html, body, #root {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
 }
 
-.App {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* This class applies to all pages except login/register */
-.main-content {
-  flex-grow: 1;
-  padding-top: 80px; /* Consistent gap for all pages */
-  padding-left: 30px;
-  padding-right: 30px;
-  background: linear-gradient(to bottom right, #e0f7fa, #b2ebf2);
-}
-
-/* This class is ONLY for the login/register pages */
-.auth-page {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  background: linear-gradient(to bottom, #A8B4FC 0%, #E3E9F9 100%);
-}
-
-/* This is the white box styling that should be used on all pages */
-.white-card {
-  background-color: white;
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-/* Form-specific styling */
 .auth-card {
     background-color: white;
     padding: 2.5rem;
@@ -110,14 +73,6 @@ html, body, #root {
     margin-top: 1rem;
     font-size: 0.9rem;
     color: #d9534f;
-}
-
-.message-error {
-  color: #d9534f;
-}
-
-.message-success {
-  color: #28a745;
 }
 
 .auth-link {

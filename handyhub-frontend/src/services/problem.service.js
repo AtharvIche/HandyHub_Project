@@ -1,22 +1,48 @@
 import axios from 'axios';
 
-// Get the base URL from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_URL = "http://localhost:8081/api/";
 
-const problemApi = axios.create({
-    baseURL: API_BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+const getAuthHeader = (token) => {
+    return {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
+};
+
+const createProblem = (problemData, token) => {
+    return axios.post(API_URL + 'problems', problemData, getAuthHeader(token));
+};
+
+const getAllProblems = (token) => {
+    return axios.get(API_URL + 'problems', getAuthHeader(token));
+};
+
+const getMyProblems = (token) => {
+    return axios.get(API_URL + 'problems/my', getAuthHeader(token));
+};
+
+const updateProblem = (id, problemData, token) => {
+    return axios.put(API_URL + `problems/${id}`, problemData, getAuthHeader(token));
+};
+
+const updateProblemStatus = (id, newStatus, token) => {
+    return axios.patch(API_URL + `problems/${id}/status`, { status: newStatus }, getAuthHeader(token));
+};
+
+const deleteProblem = (id, token) => {
+    return axios.delete(API_URL + `problems/${id}`, getAuthHeader(token));
+};
 
 const ProblemService = {
-    getAllProblems: () => problemApi.get('/problems'),
-    getProblemById: (id) => problemApi.get(`/problems/${id}`),
-    createProblem: (problemData) => problemApi.post('/problems', problemData),
-    updateProblem: (id, problemData) => problemApi.put(`/problems/${id}`, problemData),
-    deleteProblem: (id) => problemApi.delete(`/problems/${id}`),
-    getMyProblems: () => problemApi.get('/problems/my'),
+    createProblem,
+    getAllProblems,
+    getMyProblems,
+    updateProblem,
+    updateProblemStatus,
+    deleteProblem,
 };
 
 export default ProblemService;
+
+

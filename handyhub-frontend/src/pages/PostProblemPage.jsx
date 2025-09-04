@@ -1,9 +1,9 @@
-// src/pages/PostProblemPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PostProblemPage.css';
 import { serviceCategories } from '../data/categories';
-import ProblemService from '../services/problem.service'; // Import ProblemService
+import ProblemService from '../services/problem.service';
+import AuthService from '../services/auth.service'; // ✅ added import
 
 const PostProblemPage = () => {
   const [category, setCategory] = useState('');
@@ -25,29 +25,21 @@ const PostProblemPage = () => {
       return;
     }
 
-    const newProblem = {
-      category,
-      description,
-      location,
-      phone,
-      datePosted: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
-      status: 'Pending',
-    };
+    const newProblem = { category, description, location, phone };
 
     try {
-      const response = await ProblemService.createProblem(newProblem);
-      // The backend will return the saved problem with its generated ID
+      const user = AuthService.getCurrentUser();   // ✅ get current user
+      const token = user?.token;                   // ✅ extract token
+      const response = await ProblemService.createProblem(newProblem, token); // ✅ pass token
       console.log('Problem submitted successfully:', response.data);
 
-      const problemDesc = newProblem.description?.substring(0, 20) || "problem";
-      setMessage(`Problem "${problemDesc}..." submitted successfully!`);
-      
-      // Clear form fields after successful submission
+      setMessage(`Problem "${response.data.description}" submitted successfully!`);
+
+      // Clear form
       setCategory('');
       setDescription('');
       setLocation('');
       setPhone('');
-
     } catch (error) {
       console.error("Error submitting problem:", error.response ? error.response.data : error.message);
       setMessage('Error submitting problem. Please try again.');
@@ -95,11 +87,11 @@ const PostProblemPage = () => {
         </p>
       )}
       {typeof message === 'string' && message.toLowerCase().includes('successfully!') && (
-         <p style={{ textAlign: 'center', marginTop: '10px' }}>
-           <button onClick={() => navigate('/my-problems')}>View My Posted Problems</button>
-           <button onClick={() => navigate('/all-problems')} style={{marginLeft: '10px'}}>Browse All Tasks</button>
-         </p>
-       )}
+        <p style={{ textAlign: 'center', marginTop: '10px' }}>
+          <button onClick={() => navigate('/my-problems')}>View My Posted Problems</button>
+          <button onClick={() => navigate('/all-problems')} style={{marginLeft: '10px'}}>Browse All Tasks</button>
+        </p>
+      )}
     </div>
   );
 };

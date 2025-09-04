@@ -1,8 +1,8 @@
-// src/pages/AllProblemsPage.jsx
 import React, { useState, useEffect } from 'react';
 import './AllProblemsPage.css';
 import { getAllSubcategories } from '../data/categories';
 import ProblemService from '../services/problem.service'; // Import ProblemService
+import AuthService from '../services/auth.service';
 
 const AllProblemsPage = () => {
   const [allProblems, setAllProblems] = useState([]);
@@ -17,10 +17,20 @@ const AllProblemsPage = () => {
       try {
         setLoading(true);
         setError(null); // Clear previous errors
-        const response = await ProblemService.getAllProblems();
+
+        const user = AuthService.getCurrentUser();
+        if (!user || !user.token) {
+          setError("You must be logged in to view all tasks.");
+          setLoading(false);
+          setAllProblems([]);
+          return;
+        }
+
+        // Pass the token to the service method
+        const response = await ProblemService.getAllProblems(user.token);
         // Ensure problems have a status; backend should ideally handle default
         const problemsWithStatus = response.data.map(p => ({ ...p, status: p.status || 'Pending' }));
-        setAllProblems(problemsWithStatus.sort((a, b) => Number(b.id) - Number(a.id)));
+        setAllProblems(problemsWithStatus.sort((a, b) => Number(b.id) - Number(a.id))); // Sort by ID descending (most recent first)
       } catch (err) {
         console.error("Error fetching problems:", err);
         setError("Failed to load tasks. Please try again later.");
@@ -41,6 +51,20 @@ const AllProblemsPage = () => {
     const matchesCategory = selectedCategory ? problem.category === selectedCategory : true;
     return matchesSearch && matchesCategory;
   });
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      // Backend LocalDateTime format needs parsing
+      // Example: "2023-10-27T10:30:00"
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    } catch (e) {
+      console.error("Error parsing date:", dateString, e);
+      return dateString; // Return original if parsing fails
+    }
+  };
+
 
   if (loading) return <div className="page-container all-problems-page"><p>Loading tasks...</p></div>;
   if (error) return <div className="page-container all-problems-page"><p className="error-message">{error}</p></div>;
@@ -77,7 +101,7 @@ const AllProblemsPage = () => {
               <p className="problem-description">{problem.description}</p>
               <p><strong>Location:</strong> {problem.location}</p>
               <p><strong>Contact:</strong> {problem.phone}</p>
-              <p><small>Posted on: {problem.datePosted}</small></p>
+              <p><small>Posted on: {formatDate(problem.datePosted)}</small></p> {/* Display formatted date */}
               <p className="problem-status-indicator">
                 Status: <span className={`status-text status-text-${problem.status ? problem.status.toLowerCase() : 'unknown'}`}>{problem.status}</span>
               </p>

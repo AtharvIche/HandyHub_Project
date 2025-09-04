@@ -8,6 +8,7 @@ class HandyhubBackendApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// This test simply ensures that the Spring application context can load successfully.
 	}
 
 }

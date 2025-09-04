@@ -1,19 +1,32 @@
-// src/components/Navbar.jsx
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+// src/components/Navbar/Navbar.jsx
+import React, { useState, useEffect } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import AuthService from '../services/auth.service'; // Corrected path
 import './Navbar.css';
 
 const Navbar = () => {
-  // Assuming isLoggedIn is true for now to show "My Problems"
-  // This would come from your auth state in a real app
-  const isLoggedIn = true;
+  const [currentUser, setCurrentUser] = useState(undefined);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
+
+  const logOut = () => {
+    AuthService.logout();
+    setCurrentUser(undefined);
+    navigate("/");
+    window.location.reload(); // Hard reload to clear any residual state/auth
+  };
 
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-logo">
         Handy<span>Hub</span>
       </Link>
-      {/* The list of links will now be styled to align right */}
       <ul className="navbar-links">
         <li>
           <NavLink
@@ -24,32 +37,34 @@ const Navbar = () => {
             Home
           </NavLink>
         </li>
-        <li>
-          <NavLink
-            to="/post-problem"
-            className={({ isActive }) => (isActive ? 'active' : '')}
-          >
-            Post Problem
-          </NavLink>
-        </li>
-        {isLoggedIn && ( // Conditionally render "My Problems"
-           <li>
-            <NavLink
-              to="/my-problems"
-              className={({ isActive }) => (isActive ? 'active' : '')}
-            >
-              My Problems
-            </NavLink>
-          </li>
+        {currentUser && (
+          <>
+            <li>
+              <NavLink
+                to="/post-problem"
+                className={({ isActive }) => (isActive ? 'active' : '')}
+              >
+                Post Problem
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/my-problems"
+                className={({ isActive }) => (isActive ? 'active' : '')}
+              >
+                My Problems
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/all-problems"
+                className={({ isActive }) => (isActive ? 'active' : '')}
+              >
+                Browse Tasks
+              </NavLink>
+            </li>
+          </>
         )}
-        <li>
-          <NavLink
-            to="/all-problems" // Assuming this is your "Browse Tasks" page
-            className={({ isActive }) => (isActive ? 'active' : '')}
-          >
-            Browse Tasks
-          </NavLink>
-        </li>
         <li>
           <NavLink
             to="/contact-us"
@@ -59,7 +74,22 @@ const Navbar = () => {
           </NavLink>
         </li>
       </ul>
-      {/* The "navbar-get-started" div and its button have been removed */}
+      <div className="navbar-auth-links">
+        {currentUser ? (
+          <Link to="/" onClick={logOut}>
+            <button className="btn btn-secondary">Logout</button>
+          </Link>
+        ) : (
+          <>
+            <Link to="/login">
+              <button className="btn btn-primary">Login</button>
+            </Link>
+            <Link to="/register">
+              <button className="btn btn-secondary">Register</button>
+            </Link>
+          </>
+        )}
+      </div>
     </nav>
   );
 };

@@ -1,8 +1,8 @@
-// src/pages/MyProblemsPage.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './MyProblemsPage.css';
-import ProblemService from '../services/problem.service'; // Import ProblemService
+import ProblemService from '../services/problem.service';
+import AuthService from '../services/auth.service';
 
 const MyProblemsPage = () => {
   const [myProblems, setMyProblems] = useState([]);
@@ -12,15 +12,22 @@ const MyProblemsPage = () => {
   const fetchMyProblems = async () => {
     setLoading(true);
     setError(null);
+
+    const user = AuthService.getCurrentUser();
+    if (!user || !user.token) {
+      setError("You are not logged in. Please log in to view your problems.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      // The backend currently returns all problems for /api/problems/my
-      // In a real app, this would be filtered by user ID or session
-      const response = await ProblemService.getMyProblems();
+      const response = await ProblemService.getMyProblems(user.token);
+      console.log("Fetched My Problems:", response.data);
       const problemsWithStatus = response.data.map(p => ({ ...p, status: p.status || 'Pending' }));
-      setMyProblems(problemsWithStatus.sort((a, b) => Number(b.id) - Number(a.id)));
+      setMyProblems(problemsWithStatus.sort((a, b) => Number(b.id) - Number(a.id))); // Sort by ID descending (most recent first)
     } catch (err) {
-      console.error("Error loading my problems:", err);
-      setError("Failed to load your tasks. Please ensure the backend is running.");
+      console.error("Error loading my problems:", err.response ? err.response.data : err.message);
+      setError("Failed to load your tasks. Please ensure you are logged in and backend is running.");
       setMyProblems([]);
     } finally {
       setLoading(false);
@@ -32,49 +39,61 @@ const MyProblemsPage = () => {
   }, []);
 
   const updateProblemStatusHandler = async (problemId, newStatus) => {
-    try {
-      const problemToUpdate = myProblems.find(p => p.id === problemId);
-      if (!problemToUpdate) {
-        alert("Problem not found locally.");
+    const user = AuthService.getCurrentUser();
+    if (!user || !user.token) {
+        alert("You must be logged in to update a problem's status.");
         return;
-      }
-      
-      // Create a copy and update the status
-      const updatedProblemData = { ...problemToUpdate, status: newStatus };
+    }
+    
+    try {
+      await ProblemService.updateProblemStatus(problemId, newStatus, user.token);
 
-      await ProblemService.updateProblem(problemId, updatedProblemData);
-      
-      // Update local state after successful API call
-      setMyProblems(prevProblems => 
+      setMyProblems(prevProblems =>
         prevProblems.map(p => p.id === problemId ? { ...p, status: newStatus } : p)
       );
       alert(`Problem status updated to '${newStatus}'!`);
     } catch (err) {
-      console.error("Error updating problem status:", err);
+      console.error("Error updating problem status:", err.response ? err.response.data : err.message);
       setError("Failed to update status. Please try again.");
       alert("Failed to update status. Please try again.");
     }
   };
 
   const handleDeleteProblemHandler = async (problemId) => {
+    const user = AuthService.getCurrentUser();
+    if (!user || !user.token) {
+        alert("You must be logged in to delete a problem.");
+        return;
+    }
+
     if (window.confirm("Are you sure you want to delete this problem? This action cannot be undone.")) {
       try {
-        await ProblemService.deleteProblem(problemId);
-        
-        // Update local state after successful API call
+        await ProblemService.deleteProblem(problemId, user.token);
         setMyProblems(prevProblems => prevProblems.filter(p => p.id !== problemId));
         alert("Problem deleted successfully!");
       } catch (err) {
-        console.error("Error deleting problem:", err);
+        console.error("Error deleting problem:", err.response ? err.response.data : err.message);
         setError("Failed to delete problem. Please try again.");
         alert("Failed to delete problem. Please try again.");
       }
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    } catch (e) {
+      console.error("Error parsing date:", dateString, e);
+      return dateString;
+    }
+  };
+
   if (loading) {
     return <div className="page-container my-problems-page"><p>Loading your problems...</p></div>;
   }
+
   if (error) {
     return <div className="page-container my-problems-page"><p className="error-message">{error}</p></div>;
   }
@@ -84,7 +103,7 @@ const MyProblemsPage = () => {
       <h1>My Posted Problems</h1>
       {myProblems.length === 0 ? (
         <div className="no-problems-message">
-          <p>You haven't posted any problems yet. (Note: Currently displays all problems from backend)</p>
+          <p>You haven't posted any problems yet.</p>
           <Link to="/post-problem" className="post-new-problem-button">
             Post Your First Problem
           </Link>
@@ -97,27 +116,33 @@ const MyProblemsPage = () => {
               <p>{problem.description}</p>
               <p><strong>Location:</strong> {problem.location}</p>
               <p><strong>Contact:</strong> {problem.phone}</p>
-              <p><small>Posted on: {problem.datePosted}</small></p>
+              <p><small>Posted on: {formatDate(problem.datePosted)}</small></p> {/* Display formatted date */}
               <p className="problem-status">
-                <strong>Status:</strong> <span>{problem.status}</span>
+                <strong>Status:</strong> <span className={`status-text-${problem.status ? problem.status.toLowerCase() : 'unknown'}`}>{problem.status}</span>
               </p>
               <div className="problem-actions">
                 {problem.status === 'Pending' && (
                   <button
                     className="status-button solved-button"
                     onClick={() => updateProblemStatusHandler(problem.id, 'Solved')}
-                  > Mark as Solved </button>
+                  >
+                    Mark as Solved
+                  </button>
                 )}
                 {problem.status === 'Solved' && (
                   <button
                     className="status-button pending-button"
                     onClick={() => updateProblemStatusHandler(problem.id, 'Pending')}
-                  > Mark as Pending </button>
+                  >
+                    Mark as Pending
+                  </button>
                 )}
                 <button
-                    className="delete-button"
-                    onClick={() => handleDeleteProblemHandler(problem.id)}
-                > Delete </button>
+                  className="delete-button"
+                  onClick={() => handleDeleteProblemHandler(problem.id)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
