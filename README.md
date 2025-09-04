@@ -232,8 +232,6 @@ handyhub-backend/
 
 ## 🌱 Future Enhancements
 
-- 🔐 User Authentication & JWT  
-- 👥 User Profiles  
 - 📩 Direct Messaging / Bidding  
 - 🛎️ Notifications  
 - 🖼️ Image Uploads  
