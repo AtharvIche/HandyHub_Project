@@ -59,7 +59,7 @@ cd HandyHub_Project/backend
 **MySQL DB Setup**
 
 ```sql
-CREATE DATABASE handyhub_db;
+CREATE DATABASE handyhub_dbt;
 ```
 
 **Update `application.properties`:**
@@ -120,64 +120,112 @@ Opens at: `http://localhost:5173`
 
 ```bash
 handyhub-frontend/
-├── public/
-│   ├── handyhub-favicon.svg
-│   └── handyhub-hero.jpg
-├── src/
+│── .idea/
+│── node_modules/
+│── public/
+│── src/
 │   ├── assets/
 │   ├── components/
+│   │   ├── auth/
+│   │   │   ├── AuthForm.css
+│   │   │   └── AuthForm.jsx
+│   │   ├── Navbar.css
 │   │   ├── Navbar.jsx
-│   │   └── Navbar.css
+│   │   └── ProtectedRoute.jsx
+│   │
 │   ├── data/
 │   │   └── categories.js
+│   │
 │   ├── pages/
-│   │   ├── HomePage.jsx
+│   │   ├── AllProblemsPage.css
 │   │   ├── AllProblemsPage.jsx
-│   │   ├── PostProblemPage.jsx
-│   │   ├── MyProblemsPage.jsx
+│   │   ├── ContactUsPage.css
 │   │   ├── ContactUsPage.jsx
-│   │   └── *.css (for each page)
+│   │   ├── HomePage.css
+│   │   ├── HomePage.jsx
+│   │   ├── LandingPage.jsx
+│   │   ├── LoginPage.css
+│   │   ├── LoginPage.jsx
+│   │   ├── MyProblemsPage.css
+│   │   ├── MyProblemsPage.jsx
+│   │   ├── PostProblemPage.css
+│   │   ├── PostProblemPage.jsx
+│   │   ├── RegisterPage.css
+│   │   └── RegisterPage.jsx
+│   │
 │   ├── services/
+│   │   ├── api.js
+│   │   ├── auth.service.js
 │   │   └── problem.service.js
-│   ├── App.jsx
+│   │
 │   ├── App.css
-│   ├── index.css
-│   └── main.jsx
-├── .env
-├── .gitignore
-├── index.html
-├── package.json
-├── vite.config.js
-└── README.md
+│   └── App.jsx
+│
+│── package.json
+│── package-lock.json
+│── .gitignore
 ```
 
 ### 📁 Backend (`handyhub-backend`)
 
 ```bash
 handyhub-backend/
-├── src/
+│── .idea/
+│── .mvn/
+│── target/
+│── src/
 │   └── main/
-│       ├── java/
-│       │   └── com/
-│       │       └── handyhub/
-│       │           └── backend/
-│       │               ├── HandyhubBackendApplication.java
-│       │               ├── config/
-│       │               │   └── WebConfig.java
-│       │               ├── controller/
-│       │               │   └── ProblemController.java
-│       │               ├── dto/
-│       │               │   └── StatusUpdateRequest.java
-│       │               ├── entity/
-│       │               │   └── Problem.java
-│       │               ├── repository/
-│       │               │   └── ProblemRepository.java
-│       │               └── service/
-│       │                   └── ProblemService.java
+│       ├── java/com/handyhub/backend/
+│       │   ├── config/
+│       │   │   └── WebSecurityConfig.java
+│       │   ├── controllers/
+│       │   │   ├── AuthController.java
+│       │   │   └── ProblemController.java
+│       │   ├── exception/
+│       │   ├── models/
+│       │   │   ├── Problem.java
+│       │   │   └── User.java
+│       │   ├── payload/
+│       │   │   ├── request/
+│       │   │   │   ├── LoginRequest.java
+│       │   │   │   ├── ProblemRequest.java
+│       │   │   │   ├── ProblemStatusUpdateRequest.java
+│       │   │   │   └── RegisterRequest.java
+│       │   │   └── response/
+│       │   │       ├── JwtResponse.java
+│       │   │       └── MessageResponse.java
+│       │   ├── repository/
+│       │   │   ├── ProblemRepository.java
+│       │   │   └── UserRepository.java
+│       │   ├── security/
+│       │   │   └── jwt/
+│       │   │       ├── AuthEntryPointJwt.java
+│       │   │       ├── AuthTokenFilter.java
+│       │   │       └── JwtUtils.java
+│       │   ├── services/
+│       │   │   ├── ProblemService.java
+│       │   │   ├── UserDetailsImpl.java
+│       │   │   └── UserDetailsServiceImpl.java
+│       │   └── HandyhubBackendApplication.java
 │       └── resources/
+│           ├── static/
+│           ├── templates/
 │           └── application.properties
-├── pom.xml
-└── README.md
+│
+│── test/java/com/handyhub/backend/
+│   └── HandyhubBackendApplicationTests.java
+│
+│── .env
+│── .gitattributes
+│── .gitignore
+│── Dockerfile
+│── docker-compose.yml
+│── HELP.md
+│── LICENSE
+│── mvnw
+│── mvnw.cmd
+│── pom.xml
+│── README.md
 ```
 
 ---
