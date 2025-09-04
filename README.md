@@ -18,7 +18,7 @@
 - 🔗 **RESTful APIs**: Supports full CRUD operations.
 - 💾 **Database**: MySQL-backed storage for all problems.
 - 🔒 **CORS Configured**: Ensures frontend-backend communication.
-- 🛡️ **Planned**: Spring Security + JWT for authentication (coming soon).
+- 🛡️ 🛡️ **Authentication & Security**: Implemented Spring Security + JWT for secure login, registration, and API protection.
 
 ---
 
@@ -35,7 +35,7 @@
 - Spring Data JPA + Hibernate
 - MySQL
 - Lombok (optional)
-- **Planned**: Spring Security + JJWT
+- Spring Security + JWT
 
 ---
 
