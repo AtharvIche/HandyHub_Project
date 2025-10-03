@@ -40,8 +40,7 @@
 // export default ContactUsPage;
 
 
-import React from "react";
-import { MapPin, Phone, Mail } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import "./ContactUsPage.css";
 
 const ContactUsPage = () => {
@@ -64,13 +63,13 @@ const ContactUsPage = () => {
         <div className="contact-card">
           <Phone className="icon" />
           <h3>PHONE</h3>
-          <p>(+91) 87999-88210</p>
+          <p>(+91) 9579710803</p>
         </div>
 
         <div className="contact-card">
           <Mail className="icon" />
           <h3>EMAIL</h3>
-          <p>adityaiche09@gmail.com</p>
+          <p>atharviche17@gmail.com</p>
         </div>
       </div>
 
