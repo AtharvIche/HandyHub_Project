@@ -230,7 +230,7 @@ handyhub-backend/
 
 ---
 
-## 🌱 Future Enhancements
+##  Future Enhancements
 
 - 📩 Direct Messaging / Bidding  
 - 🛎️ Notifications  
@@ -245,6 +245,3 @@ handyhub-backend/
 
 This project is licensed under the MIT License.
 
----
-
-## 🔗 Built with ❤️ by Aditya Iche – [GitHub](https://github.com/adiTyaIcHe07)
